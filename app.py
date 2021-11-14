@@ -22,7 +22,7 @@ st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.op
 
 
 #Important variable
-path = "Desktop/data/"
+path = "https://jtellier.fr/DataViz/"
 file = "full_"
 file_end = ".csv"
 col_list = ['date_mutation',
