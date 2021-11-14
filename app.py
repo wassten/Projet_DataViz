@@ -108,7 +108,7 @@ def cleaning(years):
 
 @st.cache
 def simple_cleaning(years):
-        dataframe = file + str(years) + file_end
+        dataframe = "https://jtellier.fr/DataViz/full_" + str(years) + ".csv"
         df = pd.read_csv(dataframe, 
                 usecols=['valeur_fonciere',
                 'code_postal'],
