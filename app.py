@@ -76,7 +76,7 @@ def choix_genre(genre):
                         x = 'commerces'      
                         type3 = df[df['Biens immobiliers']=='Local industriel. commercial ou assimilé']
         return type3, x
-@timing
+
 @st.cache
 def cleaning(years):
         dataframe = file + str(years) + file_end
@@ -131,9 +131,9 @@ def simple_cleaning(years):
         df1.rename(columns={'valeur_fonciere':'valeur_fonciere'+str(years)}, inplace = True)
         return df1
 
-
+@timing
 def get_date(years):
-        dataframe = "full_" + str(years) + file_end
+        dataframe = path + str(years) + file_end
         df = pd.read_csv(dataframe, 
                 usecols=["date_mutation","code_postal"],
                 delimiter=',',
