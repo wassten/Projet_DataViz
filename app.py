@@ -18,7 +18,7 @@ from htbuilder.units import percent
 from htbuilder.funcs import rgba, rgb
 
 #Page configuration
-st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open(https://ibb.co/2Fn9BBm))
+st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.JPG'))
 
 
 #Important variable
