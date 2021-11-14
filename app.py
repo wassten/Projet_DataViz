@@ -79,7 +79,7 @@ def choix_genre(genre):
 
 @st.cache
 def cleaning(years):
-        dataframe = file + str(years) + file_end
+        dataframe = "https://jtellier.fr/DataViz/full_" + str(years) + ".csv"
         df = pd.read_csv(dataframe, 
                 usecols=col_list,
                 delimiter=',',
@@ -128,31 +128,6 @@ def simple_cleaning(years):
         df = df.merge(correspondance_region,left_on='code_postal', right_on='Code Postal / CEDEX',how='inner')
         df = df.dropna(subset=['Nom du département','Nom de la région'])
         df1 = df[['valeur_fonciere','Nom de la région']]
-        df1.rename(columns={'valeur_fonciere':'valeur_fonciere'+str(years)}, inplace = True)
-        return df1
-
-def get_date(years):
-        dataframe = path + str(years) + file_end
-        df = pd.read_csv(dataframe, 
-                usecols=["date_mutation","code_postal"],
-                delimiter=',',
-                header=0,
-                dtype={
-                ("code_postal"):"float32"}
-        )
-        #Delete all na and duplicate 
-        df['date_mutation'] = pd.to_datetime(df['date_mutation'])
-        #Ajout d'un 0 afin d'avoir 5 chiffres pour tout les départements
-        df = df.dropna(subset=['code_postal'])
-        df["code_postal"] = df["code_postal"].astype(str)
-        df['code_postal'] = df['code_postal'].str.zfill(7) 
-        #Jointure pour avoir les noms des départements et des régions
-        correspondance_region = pd.read_csv('correspondance-code-cedex-code-insee.csv',delimiter=';')                
-        df.code_postal = ((df.code_postal.astype(float)).astype(int)).astype(str)
-        correspondance_region['Code Postal / CEDEX'] = ((correspondance_region['Code Postal / CEDEX'].astype(float)).astype(int)).astype(str)
-        df = df.merge(correspondance_region,left_on='code_postal', right_on='Code Postal / CEDEX',how='inner')
-        df = df.dropna(subset=['Nom du département','Nom de la région'])
-        df1 = df[['date_mutation','Nom de la région']]
         df1.rename(columns={'valeur_fonciere':'valeur_fonciere'+str(years)}, inplace = True)
         return df1
 
