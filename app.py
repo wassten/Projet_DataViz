@@ -38,6 +38,18 @@ col_list = ['date_mutation',
 
 st.sidebar.header("Navigation")
 #Fonction
+file = open("temps.txt", "w+")
+def timing(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        start = time()
+        result = f(*args, **kwargs)
+        end = time()
+        file.write('Temps écoulé : {}'.format((end-start)) + "sec")
+        return result
+    return wrapper
+
+
 @st.cache
 def choix_genre(genre):
         if genre == 'Terrains':
@@ -64,7 +76,7 @@ def choix_genre(genre):
                         x = 'commerces'      
                         type3 = df[df['Biens immobiliers']=='Local industriel. commercial ou assimilé']
         return type3, x
-
+@timing
 @st.cache
 def cleaning(years):
         dataframe = file + str(years) + file_end
