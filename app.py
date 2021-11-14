@@ -131,7 +131,6 @@ def simple_cleaning(years):
         df1.rename(columns={'valeur_fonciere':'valeur_fonciere'+str(years)}, inplace = True)
         return df1
 
-@timing
 def get_date(years):
         dataframe = path + str(years) + file_end
         df = pd.read_csv(dataframe, 
