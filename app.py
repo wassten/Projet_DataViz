@@ -13,6 +13,8 @@ import sys
 import locale
 locale.setlocale(locale.LC_ALL, '')
 from PIL import Image
+from functools import wraps
+from time import time
 #footer
 import streamlit as st
 from htbuilder import HtmlElement, div, ul, li, br, hr, a, p, img, styles, classes, fonts
@@ -20,7 +22,7 @@ from htbuilder.units import percent
 from htbuilder.funcs import rgba, rgb
 
 #Page configuration
-st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.JPG'))
+st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.jpg'))
 
 st.write('🎹 🎶 A little bit of Aznavour 🎶 🎹')
 audio_file = open('aznavour.mp3', 'rb')
@@ -44,6 +46,16 @@ col_list = ['date_mutation',
 
 st.sidebar.header("Navigation")
 #Fonction
+file = open("time.txt", "w+")
+def timing(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        start = time()
+        result = f(*args, **kwargs)
+        end = time()
+        file.write('Temps écoulé : {}'.format((end-start)) + "sec")
+        return result
+    return wrapper
 
 def choix_genre(genre):
         if genre == 'Lands':
@@ -72,7 +84,7 @@ def choix_genre(genre):
         return type3, x
 
 
-
+@timing
 @st.cache
 def cleaning(years):
         dataframe = "https://jtellier.fr/DataViz/full_" + str(years) + file_end
@@ -175,15 +187,19 @@ if page == 'Accueil':
         col1.subheader("Lest's begin with some viz !" )
         st.markdown("---")
         
+        
         #1 Carte régions avec valeur foncières 
         st.subheader("First, the average property value per region : " )
-        with st.expander("More info :"):
+        col1, col2 = st.columns(2)
+        with col1.expander("More info :"):
             st.write('Ile de France is the first region, within the capital : Paris !')
         régions=json.load(open("regions.geojson",'r'))
         dfdep2020=df20.groupby('Nom de la région')['valeur_fonciere'].mean()
         choropleth=px.choropleth(data_frame=dfdep2020,geojson=régions, locations=dfdep2020.index,color='valeur_fonciere',scope="europe", featureidkey='properties.nom')
         choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-        st.write(choropleth)
+        col2.write('Census for comparaison')
+        col2.image(Image.open('census.jpg'), caption='Census')
+        col1.write(choropleth)
 
         col1, col2 = st.columns(2)
         #2 Pie avec nature mutation
@@ -208,7 +224,7 @@ if page == 'Accueil':
         fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
         col2.write(fig)
 
-        #5 Carte départements avec count ventes
+        #4 Carte départements avec count ventes
         st.subheader("What is the county with the most real estate transactions ? " )
         col1, col2 = st.columns(2) 
         dfdep20202=df20.groupby('Nom du département').count()
@@ -225,7 +241,7 @@ if page == 'Accueil':
         col1.image(Image.open('aisne.jpeg'), caption='Cathedral of Laon in the county of Aisne.')
         col2.write(choropleth)
 
-        #3 Carte départements avec count ventes
+        #5 Carte départements avec count ventes
         st.subheader("Lands are interesting aswell :" )
         with st.expander("More info :"):
             st.write('Double-click to see the value you are interested of.')
@@ -239,10 +255,11 @@ if page == 'Accueil':
         st.write(fig)
 
 
-        #Property value per years
+        #6 Property value per years
         st.subheader("Now, your turn !" )
         st.subheader("A bar chart with property value per years :" )
-        with st.expander("Choose your county :"):
+        col1, col2 = st.columns(2)
+        with col1.expander("Choose your county :"):
             régions = st.selectbox('Select a county',
                                 options=df_all['Nom de la région'].unique(),
                                 index=12)                       
@@ -257,9 +274,52 @@ if page == 'Accueil':
                                                             '2017','2018',
                                                             '2019','2020'])
         fig = px.bar(dff,x='variable', y='value',labels={'variable':'Property value','value':"Year"})
-        st.write(fig)
+        col1.write(fig)
         diff = int(100-(dff.iloc[4]['value']/dff.iloc[3]['value']*100))
+        
+        
+        #For more personalization :)
+        if régions == 'AUVERGNE-RHONE-ALPES':
+            pic =  'auvergne-rhone-alpes'
+        elif régions == 'BOURGOGNE-FRANCHE-COMTE':
+            pic = 'bourgogne-franche-comte'
+        elif régions == 'BRETAGNE':
+            pic = 'bretagne'
+        elif régions == 'CENTRE-VAL DE LOIRE':
+            pic = 'centre-val-de-loire'
+        elif régions == 'CORSE':
+            pic = 'corse'
+        elif régions == 'GRAND EST':
+            pic = 'grand-est'
+        elif régions == 'GUADELOUPE':
+            pic = 'guadeloupe'
+        elif régions == 'ILE-DE-FRANCE':
+            pic = 'ile-de-france'
+        elif régions == 'OCCITANIE':
+            pic = 'occitanie'
+        elif régions == 'GUYANE':
+            pic = 'guyane'           
+        elif régions == 'MARTINIQUE':
+            pic = 'martinique'
+        elif régions == 'PAYS DE LA LOIRE':
+            pic = 'pays-de-la-loire'
+        elif régions == 'NOUVELLE-AQUITAINE':
+            pic = 'nouvelle-aquitaine'
+        elif régions == 'NORMANDIE':
+            pic = 'normandie'    
+        elif régions == 'HAUTS-DE-FRANCE':
+            pic = 'hauts-de-france'
+        elif régions == 'LA REUNION':
+            pic = 'la-reunion'
+        elif régions == 'PROVENCE-ALPES-COTE D\'AZUR':
+            pic = 'provence-alpes-cote-d-azur'    
+
+
+        col2.image(f'https://nestenn.com/public/img/regions/{pic}.jpg', caption=f'A glimpse of {régions}')
         st.info(f'As you can see, COVID-19 has a noteworthy impact on real estate in France. In county {régions}, we can see a difference of {diff} % between 2019 and 2020. ')
+        
+        st.markdown('---')
+
 
         agree = st.checkbox('See a portion of the dataframe use in this article')
         agree2 = st.checkbox('Group by county')
@@ -443,7 +503,6 @@ def footer():
 
 def header():
     myargs = [
-        #image('https://i.postimg.cc/Wbx2zqtB/logo.jpg',width=px(201), height=px(22))
         image('https://i.postimg.cc/RFyHy4kV/logo2.jpg',width=px(550), height=px(35))
     ]
     layout2(*myargs)
