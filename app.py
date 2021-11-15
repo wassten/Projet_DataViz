@@ -20,7 +20,7 @@ from htbuilder.units import percent
 from htbuilder.funcs import rgba, rgb
 
 #Page configuration
-st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.jpg'))
+st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.JPG'))
 
 st.write('🎹 🎶 A little bit of Aznavour 🎶 🎹')
 audio_file = open('yt1s.com - La boheme piano cover by Kyoung Im Kim.mp3', 'rb')
