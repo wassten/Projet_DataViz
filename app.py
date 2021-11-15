@@ -23,7 +23,7 @@ from htbuilder.funcs import rgba, rgb
 st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.JPG'))
 
 st.write('🎹 🎶 A little bit of Aznavour 🎶 🎹')
-audio_file = open('yt1s.com - La boheme piano cover by Kyoung Im Kim.mp3', 'rb')
+audio_file = open('aznavour.mp3', 'rb')
 audio_bytes = audio_file.read()
 st.audio(audio_bytes, format='audio/mp3', start_time = 0)
 
