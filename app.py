@@ -10,6 +10,8 @@ import seaborn as sns
 import time
 import os
 import sys
+import locale
+locale.setlocale(locale.LC_ALL, '')
 from PIL import Image
 #footer
 import streamlit as st
@@ -18,8 +20,12 @@ from htbuilder.units import percent
 from htbuilder.funcs import rgba, rgb
 
 #Page configuration
-st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.JPG'))
+st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.jpg'))
 
+st.write('🎹 🎶 A little bit of Aznavour 🎶 🎹')
+audio_file = open('yt1s.com - La boheme piano cover by Kyoung Im Kim.mp3', 'rb')
+audio_bytes = audio_file.read()
+st.audio(audio_bytes, format='audio/mp3', start_time = 0)
 
 #Important variable
 path = "https://jtellier.fr/DataViz/"
@@ -40,27 +46,27 @@ st.sidebar.header("Navigation")
 #Fonction
 
 def choix_genre(genre):
-        if genre == 'Terrains':
+        if genre == 'Lands':
                 mask_constructible = df['Terrains'] == 'terrains a bâtir'
-                type2 = st.sidebar.radio('Choix du type',
-                        ('Constructible','Non-Constructible'))
-                if type2 == 'Constructible':     
+                type2 = st.sidebar.radio('Type :',
+                        ('Building','Non-building'))
+                if type2 == 'Building':     
                         x = 'Terrains constructibles'
                         type3 = df[mask_constructible] 
-                if type2 == 'Non-Constructible':
+                if type2 == 'non-building':
                         x = 'Terrains non-contructibles'
                         type3 = df[df['Terrains'] == 'sols']
 
-        if genre == 'Biens immobiliers':
+        if genre == 'Property':
                 type2 = st.sidebar.radio('Choix du type',
-                        ('maison','appartement','commerce'))
-                if type2 == 'maison':  
+                        ('Houses','Appartments','Commerces'))
+                if type2 == 'Houses':  
                         x = 'maisons'
                         type3 = df[df['Biens immobiliers']=='Maison'] 
-                if type2 == 'appartement':
+                if type2 == 'Appartments':
                         x = 'appartements'
                         type3 = df[df['Biens immobiliers']=='Appartement']
-                if type2 == 'commerce': 
+                if type2 == 'Commerces': 
                         x = 'commerces'      
                         type3 = df[df['Biens immobiliers']=='Local industriel. commercial ou assimilé']
         return type3, x
@@ -147,8 +153,16 @@ def get_date(years):
         df1.rename(columns={'valeur_fonciere':'valeur_fonciere'+str(years)}, inplace = True)
         return df1
 
+df_2016 = simple_cleaning(2016)
+df_2017 = simple_cleaning(2017)
+df_2018 = simple_cleaning(2018)
+df_2019 = simple_cleaning(2019)
+df_2020 = simple_cleaning(2020)
+df_all = pd.concat([df_2016,df_2017,df_2018,df_2019,df_2020])
+df20 = cleaning(2020)
+
 page = st.sidebar.radio('',
-                ('Accueil','Viz annuel'))
+                ('Accueil','Data explorer'))
 
 
 if page == 'Accueil':
@@ -158,25 +172,107 @@ if page == 'Accueil':
         col1.subheader("In this special issue #5, we'll talk about Open Data 📊 !")
         col1.subheader("After Italy 🍕, France 🥐 is the second european country to release websites to provide Open Data.")
         col1.subheader("And as you can imagine, it's really interesting :eyes:" )
-        col1.subheader("Lest's begin" )
+        col1.subheader("Lest's begin with some viz !" )
         st.markdown("---")
+        
+        #1 Carte régions avec valeur foncières 
+        st.subheader("First, the average property value per region : " )
+        with st.expander("More info :"):
+            st.write('Ile de France is the first region, within the capital : Paris !')
+        régions=json.load(open("regions.geojson",'r'))
+        dfdep2020=df20.groupby('Nom de la région')['valeur_fonciere'].mean()
+        choropleth=px.choropleth(data_frame=dfdep2020,geojson=régions, locations=dfdep2020.index,color='valeur_fonciere',scope="europe", featureidkey='properties.nom')
+        choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+        st.write(choropleth)
+
+        #2 Pie avec nature mutation 
+        st.subheader("Now look about the type of sales :" )
+        with st.expander("More info :"):
+            st.write('Vente : Sales, Vente en l\'état futur d\'achevement : Sale in future state of completion')
+        dd = df20.groupby('nature_mutation', as_index=False).count()
+        dd = dd[['date_mutation','nature_mutation']]
+        fig = px.pie(dd,values='date_mutation',names='nature_mutation',color_discrete_sequence=px.colors.sequential.Tealgrn[::-1])
+        fig.update_traces(textposition='inside')
+        fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
+        st.write(fig)
+
+        #3 Carte départements avec count ventes
+        st.subheader("And the type of real estate :" )
+        with st.expander("More info :"):
+            st.write('Maisons : Houses, Appartement : Appartment, Dépendence : Dependency')
+        dd = df20.groupby('nature_mutation', as_index=False).count()
+        dd = df20.groupby('Biens immobiliers', as_index=False).count()
+        dd = dd[['date_mutation','Biens immobiliers']]
+        fig = px.pie(dd,values='date_mutation',names='Biens immobiliers',color_discrete_sequence=px.colors.sequential.Tealgrn[::-1])
+        fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
+        st.write(fig)
+
+        #5 Carte départements avec count ventes
+        st.subheader("What is the county with the most real estate transactions ? " )
+        dfdep20202=df20.groupby('Nom du département').count()
+        with st.expander("Look at the Top 5 !"):
+            st.write(dfdep20202.sort_values(by=['valeur_fonciere'], ascending=False).index[:5])
+        departements=json.load(open("departements1.geojson",'r'))
+        dfdep2020=df20.groupby('code_departement').count()
+        dfdep2020.loc[20] = 5
+        dfdep2020.loc[57] = 5
+        dfdep2020.loc[67] = 5
+        dfdep2020.loc[68] = 5
+        choropleth=px.choropleth(dfdep2020,geojson=departements, locations=dfdep2020.index,color=dfdep2020.valeur_fonciere,scope="europe",featureidkey='properties.code')
+        choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+        st.write(choropleth)
+
+        #3 Carte départements avec count ventes
+        st.subheader("Lands are intersting aswell :" )
+        with st.expander("More info :"):
+            st.write('Double-click to see the value you are interested of.')
+        dd = df20.groupby('Terrains', as_index=False).count()
+
+        dd = dd[['date_mutation','Terrains']]
+
+        fig = px.pie(dd,values='date_mutation',names='Terrains', hole=.3,color_discrete_sequence=px.colors.sequential.Tealgrn[::-1])
+        fig.update_traces(textposition='inside')
+        fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
+        st.write(fig)
 
 
-df_2016 = simple_cleaning(2016)
-df_2017 = simple_cleaning(2017)
-df_2018 = simple_cleaning(2018)
-df_2019 = simple_cleaning(2019)
-df_2020 = simple_cleaning(2020)
-df_all = pd.concat([df_2016,df_2017,df_2018,df_2019,df_2020])
-df20 = cleaning(2020)
+        #Property value per years
+        st.subheader("Now, your turn !" )
+        st.subheader("A bar chart with property value per years :" )
+        with st.expander("Choose your county :"):
+            régions = st.selectbox('Select a county',
+                                options=df_all['Nom de la région'].unique(),
+                                index=12)                       
+        df_all1 = df_all.groupby(['Nom de la région'],as_index=False).count()
+        df_all1.rename(columns={'valeur_fonciere2016':'2016'}, inplace = True)
+        df_all1.rename(columns={'valeur_fonciere2017':'2017'}, inplace = True)
+        df_all1.rename(columns={'valeur_fonciere2018':'2018'}, inplace = True)
+        df_all1.rename(columns={'valeur_fonciere2019':'2019'}, inplace = True)
+        df_all1.rename(columns={'valeur_fonciere2020':'2020'}, inplace = True)        
+        dff = df_all1[df_all1['Nom de la région']==régions]   
+        dff = dff.melt(id_vars=['Nom de la région'] , value_vars=['2016',
+                                                            '2017','2018',
+                                                            '2019','2020'])
+        fig = px.bar(dff,x='variable', y='value',labels={'variable':'Property value','value':"Year"})
+        st.write(fig)
+        diff = int(100-(dff.iloc[4]['value']/dff.iloc[3]['value']*100))
+        st.info(f'As you can see, COVID-19 has a noteworthy impact on real estate in France. In county {régions}, we can see a difference of {diff} % between 2019 and 2020. ')
+
+        agree = st.checkbox('See a portion of the dataframe use in this article')
+        agree2 = st.checkbox('Group by county')
+        if agree:
+            st.write(df20.head(10))
+        if agree2:
+            st.write(df20.groupby('Nom de la région').mean())
+        st.info('All viz above are only from 2020 expect the bar chart')
 
 
-if page == 'Viz annuel':
+if page == 'Data explorer':
         year = st.sidebar.slider(
-        'Voir les données de l\'année : ',
+        'Choose a year: ',
         2016, 2020,2016)
-        genre = st.sidebar.radio('Choix du type',
-                ('Biens immobiliers','Terrains'))
+        genre = st.sidebar.radio('Type of real estate :',
+                ('Property','Lands'))
         df = cleaning(year)
         type3,x = choix_genre(genre)                
         map = type3[['latitude','longitude']]
@@ -184,6 +280,7 @@ if page == 'Viz annuel':
 
         #Création des columns
         col1, col2 = st.columns(2)
+        col11,col22,col33,col44=st.columns(4)
 
         #Séléction et Affichage des cartes région et département
         région = col1.selectbox('Sélectioner une région',
@@ -198,7 +295,8 @@ if page == 'Viz annuel':
         col1.write(f'Nombre de {x} mise en vente en {year} :')
         col1.subheader(f'{int(map[mask_region].size)}')
         col1.write(f'Prix total des ventes en euros sur les {x} en {year} :')
-        col1.subheader(f'{int(valeur[mask_region].sum())} €')
+        col11.subheader(locale.format('%d', int(valeur[mask_region].sum()), grouping=True))
+        col22.subheader('.   €')
 
 
         département = col2.selectbox('Sélectioner un département',
@@ -212,75 +310,15 @@ if page == 'Viz annuel':
         col2.map((map[mask_dep]),zoom=7.5)
         col2.write(f'Nombre de {x} mise en vente en {year} :')
         col2.subheader(f'{int(map[mask_dep][mask_dep_count].size)}')
+        col2.write(f'Prix total des ventes en euros sur les {x} en {year} :')
+        col33.subheader(locale.format('%d', int(valeur[mask_dep].sum()), grouping=True))
+        col44.subheader('€')
 
 
-#1 Carte régions avec valeur foncières 
-st.subheader("First, the average property value per region : " )
-with st.expander("More info :"):
-    st.write('Ile de France is the first region, within the capital : Paris !')
-régions=json.load(open("regions.geojson",'r'))
-dfdep2020=cleaning(2020).groupby('Nom de la région')['valeur_fonciere'].mean()
-choropleth=px.choropleth(data_frame=dfdep2020,geojson=régions, locations=dfdep2020.index,color='valeur_fonciere',scope="europe", featureidkey='properties.nom')
-choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-st.write(choropleth)
-
-#2 Pie avec nature mutation 
-st.subheader("Now look about the type of sales" )
-with st.expander("More info :"):
-    st.write('Vente : Sales, Vente en l\'état futur d\'achevement : Sale in future state of completion')
-dd = cleaning(2020).groupby('nature_mutation', as_index=False).count()
-dd = dd[['date_mutation','nature_mutation']]
-fig = px.pie(dd,values='date_mutation',names='nature_mutation',color_discrete_sequence=px.colors.sequential.Tealgrn[::-1])
-fig.update_traces(textposition='inside')
-fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
-st.write(fig)
-
-#3 Carte départements avec count ventes
-st.subheader("Now look about the type of real estate" )
-with st.expander("More info :"):
-    st.write('Maisons : Houses, Appartement : Appartment, Dépendence : Dependency')
-dd = cleaning(2020).groupby('nature_mutation', as_index=False).count()
-dd = cleaning(2020).groupby('Biens immobiliers', as_index=False).count()
-dd = dd[['date_mutation','Biens immobiliers']]
-fig = px.pie(dd,values='date_mutation',names='Biens immobiliers',color_discrete_sequence=px.colors.sequential.Tealgrn[::-1])
-fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
-st.write(fig)
-
-#5 Carte départements avec count ventes
-st.subheader("What is the county with the most real estate transactions ? " )
-dfdep20202=cleaning(2020).groupby('Nom du département').count()
-with st.expander("Look at the Top 5 !"):
-    st.write(dfdep20202.sort_values(by=['valeur_fonciere'], ascending=False).index[:5])
-departements=json.load(open("departements1.geojson",'r'))
-dfdep2020=cleaning(2020).groupby('code_departement').count()
-dfdep2020.loc[20] = 5
-dfdep2020.loc[57] = 5
-dfdep2020.loc[67] = 5
-dfdep2020.loc[68] = 5
-choropleth=px.choropleth(dfdep2020,geojson=departements, locations=dfdep2020.index,color=dfdep2020.valeur_fonciere,scope="europe",featureidkey='properties.code')
-choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-st.write(choropleth)
+st.info('Source of the dataset :  https://www.data.gouv.fr/en/datasets/demandes-de-valeurs-foncieres/ ')
 
 
-dd = cleaning(2020).groupby('Terrains', as_index=False).count()
-
-dd = dd[['date_mutation','Terrains']]
-
-fig = px.pie(dd,values='date_mutation',names='Terrains', hole=.3,color_discrete_sequence=px.colors.sequential.Tealgrn[::-1])
-fig.update_traces(textposition='inside')
-fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
-st.write(fig)
-
-
-
-df_all = df_all.groupby(['Nom de la région'],as_index=False).count()
-dff = df_all[df_all['Nom de la région']=='ILE-DE-FRANCE']   
-dff = dff.melt(id_vars=['Nom de la région'] , value_vars=['valeur_fonciere2016',
-                                                    'valeur_fonciere2017','valeur_fonciere2018',
-                                                    'valeur_fonciere2019','valeur_fonciere2020'])
-fig = px.bar(dff,x='variable', y='value')
-st.write(fig)
-
+#Footer and Layer with images and links (LinkedIn)
 from htbuilder.units import px
 
 def image(src_as_string, **style):
@@ -407,9 +445,7 @@ def header():
     ]
     layout2(*myargs)
 
-
-if __name__ == "__main__":
-    footer()
-    header()
+footer()
+header()
 
  
