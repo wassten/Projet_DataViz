@@ -18,12 +18,12 @@ from htbuilder.units import percent
 from htbuilder.funcs import rgba, rgb
 
 #Page configuration
-st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.JPG'))
+st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.jpg'))
 
 
 #Important variable
 path = "https://jtellier.fr/DataViz/"
-file = "https://jtellier.fr/DataViz/full_"
+file = "full_"
 file_end = ".csv"
 col_list = ['date_mutation',
         'nature_mutation',
@@ -38,19 +38,7 @@ col_list = ['date_mutation',
 
 st.sidebar.header("Navigation")
 #Fonction
-file = open("temps.txt", "w+")
-def timing(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        start = time()
-        result = f(*args, **kwargs)
-        end = time()
-        file.write('Temps écoulé : {}'.format((end-start)) + "sec")
-        return result
-    return wrapper
 
-
-@st.cache
 def choix_genre(genre):
         if genre == 'Terrains':
                 mask_constructible = df['Terrains'] == 'terrains a bâtir'
@@ -77,9 +65,11 @@ def choix_genre(genre):
                         type3 = df[df['Biens immobiliers']=='Local industriel. commercial ou assimilé']
         return type3, x
 
+
+
 @st.cache
 def cleaning(years):
-        dataframe = "https://jtellier.fr/DataViz/full_" + str(years) + ".csv"
+        dataframe = "https://jtellier.fr/DataViz/full_" + str(years) + file_end
         df = pd.read_csv(dataframe, 
                 usecols=col_list,
                 delimiter=',',
@@ -108,7 +98,7 @@ def cleaning(years):
 
 @st.cache
 def simple_cleaning(years):
-        dataframe = "https://jtellier.fr/DataViz/full_" + str(years) + ".csv"
+        dataframe = "https://jtellier.fr/DataViz/full_" + str(years) + file_end
         df = pd.read_csv(dataframe, 
                 usecols=['valeur_fonciere',
                 'code_postal'],
@@ -128,6 +118,32 @@ def simple_cleaning(years):
         df = df.merge(correspondance_region,left_on='code_postal', right_on='Code Postal / CEDEX',how='inner')
         df = df.dropna(subset=['Nom du département','Nom de la région'])
         df1 = df[['valeur_fonciere','Nom de la région']]
+        df1.rename(columns={'valeur_fonciere':'valeur_fonciere'+str(years)}, inplace = True)
+        return df1
+
+
+def get_date(years):
+        dataframe = "https://jtellier.fr/DataViz/full_" + str(years) + file_end
+        df = pd.read_csv(dataframe, 
+                usecols=["date_mutation","code_postal"],
+                delimiter=',',
+                header=0,
+                dtype={
+                ("code_postal"):"float32"}
+        )
+        #Delete all na and duplicate 
+        df['date_mutation'] = pd.to_datetime(df['date_mutation'])
+        #Ajout d'un 0 afin d'avoir 5 chiffres pour tout les départements
+        df = df.dropna(subset=['code_postal'])
+        df["code_postal"] = df["code_postal"].astype(str)
+        df['code_postal'] = df['code_postal'].str.zfill(7) 
+        #Jointure pour avoir les noms des départements et des régions
+        correspondance_region = pd.read_csv('correspondance-code-cedex-code-insee.csv',delimiter=';')                
+        df.code_postal = ((df.code_postal.astype(float)).astype(int)).astype(str)
+        correspondance_region['Code Postal / CEDEX'] = ((correspondance_region['Code Postal / CEDEX'].astype(float)).astype(int)).astype(str)
+        df = df.merge(correspondance_region,left_on='code_postal', right_on='Code Postal / CEDEX',how='inner')
+        df = df.dropna(subset=['Nom du département','Nom de la région'])
+        df1 = df[['date_mutation','Nom de la région']]
         df1.rename(columns={'valeur_fonciere':'valeur_fonciere'+str(years)}, inplace = True)
         return df1
 
@@ -203,8 +219,7 @@ st.subheader("First, the average property value per region : " )
 with st.expander("More info :"):
     st.write('Ile de France is the first region, within the capital : Paris !')
 régions=json.load(open("regions.geojson",'r'))
-dfdep2020=cleaning(2020).groupby('Nom de la région').mean()
-dfdep2020=['valeur_fonciere']
+dfdep2020=cleaning(2020).groupby('Nom de la région').mean('valeur_fonciere')
 choropleth=px.choropleth(data_frame=dfdep2020,geojson=régions, locations=dfdep2020.index,color='valeur_fonciere',scope="europe", featureidkey='properties.nom')
 choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 st.write(choropleth)
@@ -245,39 +260,6 @@ dfdep2020.loc[68] = 5
 choropleth=px.choropleth(dfdep2020,geojson=departements, locations=dfdep2020.index,color=dfdep2020.valeur_fonciere,scope="europe",featureidkey='properties.code')
 choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 st.write(choropleth)
-
-
-dataframe = "full_" + str(2020) + file_end
-df = pd.read_csv(dataframe, 
-        usecols=["date_mutation","code_postal"],
-        delimiter=',',
-        header=0,
-        dtype={
-        ("code_postal"):"float32"}
-)
-#Delete all na and duplicate 
-df['date_mutation'] = pd.to_datetime(df['date_mutation'])
-#Ajout d'un 0 afin d'avoir 5 chiffres pour tout les départements
-df = df.dropna(subset=['code_postal'])
-df["code_postal"] = df["code_postal"].astype(str)
-df['code_postal'] = df['code_postal'].str.zfill(7) 
-#Jointure pour avoir les noms des départements et des régions
-correspondance_region = pd.read_csv('correspondance-code-cedex-code-insee.csv',delimiter=';')                
-df.code_postal = ((df.code_postal.astype(float)).astype(int)).astype(str)
-correspondance_region['Code Postal / CEDEX'] = ((correspondance_region['Code Postal / CEDEX'].astype(float)).astype(int)).astype(str)
-df = df.merge(correspondance_region,left_on='code_postal', right_on='Code Postal / CEDEX',how='inner')
-df = df.dropna(subset=['Nom du département','Nom de la région'])
-df1 = df[['date_mutation','Nom de la région']]
-df1.rename(columns={'valeur_fonciere':'valeur_fonciere'+str(2020)}, inplace = True)
-
-df1 = cleaning(2020)
-df1['month']= df1['date_mutation'].dt.month
-df1.groupby('month',as_index=False).count()
-fig = px.bar(df1,x='month', y='Nom de la région')
-st.write(fig)
-
-
-
 
 
 dd = cleaning(2020).groupby('Terrains', as_index=False).count()
