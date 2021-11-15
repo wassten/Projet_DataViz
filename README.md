@@ -10,4 +10,6 @@ Sur le sidebar nous pourrons alors choisir l'année et le type de bien. Quelque 
 
 J'ai préféré dès le départ utiliser l'ensemble des datasets avec toute les années en supprimer seulement les biens où il manquer des informations importantes tel que le code postal par exemple.
 
+j'ai aussi toucher aux fichiers de config de streamlit afin de toucher un peu au front et j'ai aussi ajouter un header et footer fixe à ma page pour une meilleur immersion (tel un vrai site)
+
 Bonne visite !
