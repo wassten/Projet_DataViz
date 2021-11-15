@@ -27,7 +27,7 @@ st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.op
 st.write('🎹 🎶 A little bit of Aznavour 🎶 🎹')
 audio_file = open('aznavour.mp3', 'rb')
 audio_bytes = audio_file.read()
-st.audio(audio_bytes, format='audio/mp3', start_time = 0)
+st.audio(audio_bytes, format='audio/mp3', start_time = 7)
 
 #Important variable
 path = "https://jtellier.fr/DataViz/"
