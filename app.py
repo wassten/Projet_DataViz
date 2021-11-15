@@ -185,32 +185,34 @@ if page == 'Accueil':
         choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
         st.write(choropleth)
 
-        #2 Pie avec nature mutation 
-        st.subheader("Now look about the type of sales :" )
-        with st.expander("More info :"):
+        col1, col2 = st.columns(2)
+        #2 Pie avec nature mutation
+        col1.subheader("Now look about the type of sales :" )
+        with col1.expander("More info :"):
             st.write('Vente : Sales, Vente en l\'état futur d\'achevement : Sale in future state of completion')
         dd = df20.groupby('nature_mutation', as_index=False).count()
         dd = dd[['date_mutation','nature_mutation']]
         fig = px.pie(dd,values='date_mutation',names='nature_mutation',color_discrete_sequence=px.colors.sequential.Tealgrn[::-1])
         fig.update_traces(textposition='inside')
         fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
-        st.write(fig)
+        col1.write(fig)
 
-        #3 Carte départements avec count ventes
-        st.subheader("And the type of real estate :" )
-        with st.expander("More info :"):
+        #3 Pir type of real estate
+        col2.subheader("And the type of real estate :" )
+        with col2.expander("More info :"):
             st.write('Maisons : Houses, Appartement : Appartment, Dépendence : Dependency')
         dd = df20.groupby('nature_mutation', as_index=False).count()
         dd = df20.groupby('Biens immobiliers', as_index=False).count()
         dd = dd[['date_mutation','Biens immobiliers']]
         fig = px.pie(dd,values='date_mutation',names='Biens immobiliers',color_discrete_sequence=px.colors.sequential.Tealgrn[::-1])
         fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
-        st.write(fig)
+        col2.write(fig)
 
         #5 Carte départements avec count ventes
         st.subheader("What is the county with the most real estate transactions ? " )
+        col1, col2 = st.columns(2) 
         dfdep20202=df20.groupby('Nom du département').count()
-        with st.expander("Look at the Top 5 !"):
+        with col2.expander("Look at the Top 5 !"):
             st.write(dfdep20202.sort_values(by=['valeur_fonciere'], ascending=False).index[:5])
         departements=json.load(open("departements1.geojson",'r'))
         dfdep2020=df20.groupby('code_departement').count()
@@ -220,10 +222,11 @@ if page == 'Accueil':
         dfdep2020.loc[68] = 5
         choropleth=px.choropleth(dfdep2020,geojson=departements, locations=dfdep2020.index,color=dfdep2020.valeur_fonciere,scope="europe",featureidkey='properties.code')
         choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-        st.write(choropleth)
+        col1.image(Image.open('aisne.jpeg'), caption='Cathedral of Laon in the county of Aisne.')
+        col2.write(choropleth)
 
         #3 Carte départements avec count ventes
-        st.subheader("Lands are intersting aswell :" )
+        st.subheader("Lands are interesting aswell :" )
         with st.expander("More info :"):
             st.write('Double-click to see the value you are interested of.')
         dd = df20.groupby('Terrains', as_index=False).count()
