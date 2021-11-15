@@ -198,7 +198,7 @@ if page == 'Accueil':
         choropleth=px.choropleth(data_frame=dfdep2020,geojson=régions, locations=dfdep2020.index,color='valeur_fonciere',scope="europe", featureidkey='properties.nom')
         choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
         col2.write('Census for comparaison')
-        col2.image(Image.open('census.jpg'), caption='Census')
+        col2.image(Image.open('census.JPG'), caption='Census')
         col1.write(choropleth)
 
         col1, col2 = st.columns(2)
