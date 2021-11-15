@@ -219,7 +219,7 @@ st.subheader("First, the average property value per region : " )
 with st.expander("More info :"):
     st.write('Ile de France is the first region, within the capital : Paris !')
 régions=json.load(open("regions.geojson",'r'))
-dfdep2020=cleaning(2020).groupby('Nom de la région').mean('valeur_fonciere')
+dfdep2020=cleaning(2020).groupby('Nom de la région')['valeur_fonciere'].mean()
 choropleth=px.choropleth(data_frame=dfdep2020,geojson=régions, locations=dfdep2020.index,color='valeur_fonciere',scope="europe", featureidkey='properties.nom')
 choropleth.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 st.write(choropleth)
