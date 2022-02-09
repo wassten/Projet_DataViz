@@ -20,7 +20,6 @@ import streamlit as st
 from htbuilder import HtmlElement, div, ul, li, br, hr, a, p, img, styles, classes, fonts
 from htbuilder.units import percent
 from htbuilder.funcs import rgba, rgb
-import s3fs
 
 #Page configuration
 st.set_page_config(layout="wide",page_title='Real Investate', page_icon=Image.open('ri.JPG'))
