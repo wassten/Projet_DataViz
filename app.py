@@ -29,21 +29,6 @@ audio_file = open('aznavour.mp3', 'rb')
 audio_bytes = audio_file.read()
 st.audio(audio_bytes, format='audio/mp3', start_time = 7)
 
-# Create connection object.
-# `anon=False` means not anonymous, i.e. it uses access keys to pull data.
-#fs = s3fs.S3FileSystem(anon=False)
-
-# Retrieve file contents.
-# Uses st.cache to only rerun when the query changes or after 10 min.
-#@st.cache(ttl=600)
-#def read_file(filename):
-#    with fs.open(filename) as f:
-#        return f.read().decode("utf-8")
-
-#content = read_file("streamlitw/full_2016.csv.csv")
-#st.write(content)
-
-
 df1 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/GOrVpuxe12bweaK9/full_2020_1.csv",nrows=300000,memory_map=True,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
 df2 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/-mqSOhjWBxt-rSMZ/full_2020_2.csv",nrows=300000,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
 full_2020=pd.concat([df1,df2])
