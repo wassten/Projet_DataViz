@@ -31,16 +31,16 @@ st.audio(audio_bytes, format='audio/mp3', start_time = 7)
 
 # Create connection object.
 # `anon=False` means not anonymous, i.e. it uses access keys to pull data.
-fs = s3fs.S3FileSystem(anon=False)
+#fs = s3fs.S3FileSystem(anon=False)
 
 # Retrieve file contents.
 # Uses st.cache to only rerun when the query changes or after 10 min.
-@st.cache(ttl=600)
-def read_file(filename):
-    with fs.open(filename) as f:
-        return f.read().decode("utf-8")
+#@st.cache(ttl=600)
+#def read_file(filename):
+#    with fs.open(filename) as f:
+#        return f.read().decode("utf-8")
 
-content = read_file("streamlitw/full_2016.csv.csv")
+#content = read_file("streamlitw/full_2016.csv.csv")
 st.write(content)
 #Important variable
 path = "https://jtellier.fr/DataViz/"
