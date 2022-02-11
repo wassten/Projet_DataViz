@@ -35,7 +35,7 @@ full_2020=pd.concat([df1,df2])
 
 df6 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/U_Nn5m1-sXAux1qO/full_2019_1.csv",nrows=300000,memory_map=True,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
 df3 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/zogg9pmrCYohCAyX/full_2019_2.csv",nrows=300000,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
-df4 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/QN5fX5w0qiLStf-o/full_2019_3.csv",nrows=300000,memory_map=True,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
+df4 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/QN5fX5w0qiLStf-o/full_2019_3.csv",nrows=300000,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
 df5 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/-hVR2tOISmPUcNEG/full_2019_4.csv",nrows=300000,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
 full_2019=pd.concat([df3,df4,df5,df6])
 
@@ -46,9 +46,9 @@ full_2018=pd.concat([df7,df8,df9])
 
 df10 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/82AUNnGD4l0vG4Xi/full_2017_1.csv",nrows=300000,memory_map=True,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
 df11 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/WPgvmacBEIbAqgnC/full_2017_2.csv",nrows=300000,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
-df12 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/bSoOVU9O26a39gcD/full_2017_3.csv",nrows=300000,memory_map=True,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
+df12 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/bSoOVU9O26a39gcD/full_2017_3.csv",nrows=300000,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
 df13 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/tgq3jXf8IJiN0zcF/full_2017_4.csv",nrows=300000,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
-full_2017=pd.concat([df3,df4,df5,df6])
+full_2017=pd.concat([df10,df11,df12,df13])
 
 df14 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/gBWoHAnDjy7bGnto/full_2016_1.csv",nrows=300000,memory_map=True,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
 df15 = pd.read_csv("https://chenutfamily.freeboxos.fr:45883/share/PCqKGPaNzVHN1tM6/full_2016_2.csv",nrows=300000,low_memory=False,usecols=['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude'])[['date_mutation','nature_mutation','valeur_fonciere','adresse_numero','adresse_suffixe','adresse_nom_voie','adresse_code_voie','code_postal','code_commune','nom_commune','code_departement','type_local','surface_reelle_bati','nombre_pieces_principales','surface_terrain','longitude','latitude']]
@@ -57,7 +57,7 @@ full_2016=pd.concat([df14,df15,df16])
 
 #Important variable
 path = "https://jtellier.fr/DataViz/"
-file = "full_"
+files = "full_"
 file_end = ".csv"
 col_list = ['date_mutation',
         'nature_mutation',
@@ -113,7 +113,7 @@ def choix_genre(genre):
 @timing
 @st.cache
 def cleaning(years):
-        dataframe = file + str(years)
+        dataframe = files + str(years)
         df = pd.read_csv(dataframe, 
                 usecols=col_list,
                 delimiter=',',
@@ -142,7 +142,7 @@ def cleaning(years):
 
 @st.cache
 def simple_cleaning(years):
-        dataframe = file + str(years)
+        dataframe = files + str(years)
         df = pd.read_csv(dataframe, 
                 usecols=['valeur_fonciere',
                 'code_postal'],
@@ -167,7 +167,7 @@ def simple_cleaning(years):
 
 
 def get_date(years):
-        dataframe = file + str(years)
+        dataframe = files + str(years)
         df = pd.read_csv(dataframe, 
                 usecols=["date_mutation","code_postal"],
                 delimiter=',',
