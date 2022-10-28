@@ -1,4 +1,4 @@
-# Projet_DataViz
+# DataViz Project
 
 I wanted to transcribe the information from all the datasets in the form of an article.
 
